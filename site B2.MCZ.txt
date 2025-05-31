@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>B2MCZ - Loja Online</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 0; }
+    header { background-color: #000; color: #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { margin: 0; }
+    nav input { padding: 5px; width: 200px; }
+    main { padding: 20px; }
+    .produto { background: #fff; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.2); padding: 10px; margin-bottom: 15px; }
+    button { background-color: #007bff; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+    .formulario, .rastreador { background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.2); margin-bottom: 20px; }
+    label { display: block; margin-top: 10px; }
+    input, select { padding: 5px; width: 100%; margin-top: 5px; }
+  </style>
+  <script>
+    function calcularFrete() {
+      const cep = document.getElementById("cep").value;
+      let frete = cep.startsWith("57") ? 5 : 20;
+      document.getElementById("frete").innerText = `Frete estimado: R$ ${frete.toFixed(2)}`;
+    }
+
+    function enviarPedido(nome, endereco, cep) {
+      let produto = document.getElementById("produtoSelect").value;
+      let tamanho = document.getElementById("tamanho").value;
+      let cor = document.getElementById("cor").value;
+      let mensagem = `Olá, quero fazer um pedido:\nProduto: ${produto}\nTamanho: ${tamanho}\nCor: ${cor}\nNome: ${nome}\nEndereço: ${endereco}\nCEP: ${cep}`;
+      let url = `https://wa.me/5582988336021?text=${encodeURIComponent(mensagem)}`;
+      window.open(url, "_blank");
+    }
+
+    function rastrearPedido() {
+      const codigo = document.getElementById("codigoRastreamento").value;
+      const link = `https://www2.correios.com.br/sistemas/rastreamento/default.cfm?t=${codigo}`;
+      window.open(link, "_blank");
+    }
+
+    function filtrarProdutos() {
+      const termo = document.getElementById("pesquisa").value.toLowerCase();
+      const produtos = document.querySelectorAll(".produto");
+      produtos.forEach(p => {
+        p.style.display = p.innerText.toLowerCase().includes(termo) ? "block" : "none";
+      });
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <h1>B2MCZ</h1>
+    <nav>
+      <input type="text" id="pesquisa" oninput="filtrarProdutos()" placeholder="Pesquisar produtos..." />
+    </nav>
+  </header>
+
+  <main>
+    <section class="formulario">
+      <h2>Faça seu pedido</h2>
+      <label>Nome:</label>
+      <input type="text" id="nome" required />
+      <label>Endereço:</label>
+      <input type="text" id="endereco" required />
+      <label>CEP:</label>
+      <input type="text" id="cep" onblur="calcularFrete()" required />
+      <p id="frete">Frete estimado: </p>
+
+      <label>Produto:</label>
+      <select id="produtoSelect">
+        <option value="Camisa">Camisa</option>
+        <option value="Regata">Regata</option>
+        <option value="Moletom">Moletom</option>
+        <option value="Casaco">Casaco</option>
+        <option value="Tênis">Tênis</option>
+        <option value="Bolsa">Bolsa</option>
+      </select>
+      <label>Tamanho:</label>
+      <select id="tamanho">
+        <option>P</option><option>M</option><option>G</option><option>GG</option>
+      </select>
+      <label>Cor (opcional):</label>
+      <input type="text" id="cor" />
+
+      <button onclick="enviarPedido(document.getElementById('nome').value, document.getElementById('endereco').value, document.getElementById('cep').value)">Enviar Pedido pelo WhatsApp</button>
+    </section>
+
+    <section class="rastreador">
+      <h2>Rastrear Pedido</h2>
+      <label>Código de rastreamento:</label>
+      <input type="text" id="codigoRastreamento" />
+      <button onclick="rastrearPedido()">Rastrear</button>
+    </section>
+
+    <section id="produtos">
+      <div class="produto">
+        <h3>Camisa Masculina</h3>
+        <p>Tamanhos: P, M, G, GG</p>
+        <p>R$ 39,90</p>
+      </div>
+      <div class="produto">
+        <h3>Moletom Feminino</h3>
+        <p>Tamanhos: M, G, GG</p>
+        <p>R$ 89,90</p>
+      </div>
+      <!-- + produtos -->
+    </section>
+  </main>
+</body>
+</html>
